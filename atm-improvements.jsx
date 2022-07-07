@@ -1,5 +1,5 @@
 const ATMDeposit = ({ onChange, isDeposit, isValid }) => {
-  const choice = ['Deposit', 'Cash Back'];
+  const choice = ['Deposit', 'Withdrawl'];
   console.log(`ATM isDeposit: ${isDeposit}`);
   return (
     <label className="label huge">
@@ -17,6 +17,8 @@ const Account = () => {
   const [isDeposit, setIsDeposit] = React.useState(true);
   const [atmMode, setAtmMode] = React.useState('');
   const [validTransaction, setValidTransaction] = React.useState(false);
+  //const [ledger, setLedger] = React.useState([]);
+  const ledger = [];
 
   let status = `Account Balance $ ${totalState} `;
   console.log(`Account Rendered with isDeposit: ${isDeposit}`);
@@ -25,18 +27,22 @@ const Account = () => {
     if (Number(event.target.value) <= 0) {
       return setValidTransaction(false);
     }
-    if (atmMode === 'Cash Back' && Number(event.target.value) > totalState) {
+    if (atmMode === 'Withdrawl' && Number(event.target.value) > totalState) {
       setValidTransaction(false);
     } else {
       setValidTransaction(true);
     }
     setDeposit(Number(event.target.value));
   };
+  // Submit
   const handleSubmit = (event) => {
     let newTotal = isDeposit ? totalState + deposit : totalState - deposit;
     setTotalState(newTotal);
     setValidTransaction(false);
     event.preventDefault();
+    console.log('Submit Button was clicked');
+    ledger.push(deposit);
+    console.log(ledger);
   };
 
   const handleModeSelect = (event) => {
@@ -60,10 +66,11 @@ const Account = () => {
           <option id="deposit-selection" value="Deposit">
             Deposit
           </option>
-          <option id="cashback-selection" value="Cash Back">
-            Cash Back
+          <option id="cashback-selection" value="Withdrawl">
+            Withdrawl
           </option>
         </select>
+        {/*  <div>{deposit}</div>   for testing*/}
         {atmMode && (
           <ATMDeposit
             onChange={handleChange}
@@ -71,6 +78,7 @@ const Account = () => {
             isValid={validTransaction}
           ></ATMDeposit>
         )}
+        
       </>
     </form>
   );
